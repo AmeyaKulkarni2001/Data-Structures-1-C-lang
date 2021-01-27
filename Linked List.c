@@ -164,7 +164,7 @@ void create1(struct node *last, int x) {
 
 void merge(struct node *head1, struct node *head2) {
     printf("\nin merge");
-    struct node *temp1 = head1, *temp2 = head2, *head3, *temp3 = head3;
+    struct node *temp1 = head1 -> next, *temp2 = head2 -> next, *head3, *temp3 = head3;
     head3=(struct node*)malloc(sizeof(struct node));
     while(temp1 != NULL && temp2 != NULL) {
         if(temp1->data <= temp2->data) {
@@ -179,11 +179,13 @@ void merge(struct node *head1, struct node *head2) {
     if(temp1 == NULL) {
         while(temp2 != NULL) {
             create1(temp3, temp2->data);
+            temp2 = temp2->next;
             temp3 = temp3->next;
         }
     } else if(temp2 == NULL) {
         while(temp1 != NULL) {
             create1(temp3, temp1->data);
+            temp1 = temp1->next;
             temp3 = temp3->next;
         }
     }
