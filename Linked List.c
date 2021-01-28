@@ -1,5 +1,3 @@
-// work in progress
-// merge doesn't work
 #include <stdio.h>
 #include <stdlib.h>
 
