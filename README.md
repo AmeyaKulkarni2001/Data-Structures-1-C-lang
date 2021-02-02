@@ -1,2 +1,2 @@
-# baisc-C
+# C Programs
 Basic c programs
