@@ -1,17 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct node {
+struct node
+{
     int data;
     struct node *next;
 };
+
+int len(struct node*);
 struct node *head, *nnode, *head1, *head2;
 
-void create(struct node *head) {
+void create(struct node *head)
+{
     struct node *temp, *curr;
     temp=head;
     int ch=0;
-    do {
+    do
+    {
         curr=(struct node*)malloc(sizeof(struct node));
         printf("Enter data in node: ");
         scanf("%d", &curr->data);
@@ -26,138 +31,161 @@ void create(struct node *head) {
             printf("wrong choice\n");
         }
     }while(ch!=2);
+    head=temp;
 }
 
-int length(struct node *head) {
-    struct node *last;
-    last=head;
-    int ctr=0;
-    while(last->next!=NULL) {
-        last=last->next;
-        ctr++;
-    }
-    return ctr;
-}
-
-void display(struct node *head) {
+void display(struct node *head)
+{
     struct node *curr;
     if(head->next==NULL)
         printf("List is Empty");
-    else {
+    else
+    {
         curr=head->next;
         printf("List is:\n");
-        while(curr!=NULL) {
-            printf("%d -> ", curr->data);
+        while(curr!=NULL)
+        {
+            printf("\t%d", curr->data);
+            printf("\n");
             curr=curr->next;
         }
-        printf("NULL");
     }
+    
 }
 
-void insert(struct node *head) {
+void atBeg(struct node *head)
+{
+    nnode=(struct node*)malloc(sizeof(struct node));
+    printf("Enter data to add in new node\n");
+    scanf("%d", &nnode->data);
+    nnode->next=head->next;
+    head->next=nnode;
+}
+
+void atEnd(struct node *head)
+{
+    struct node *last;
+    last=head;
+    nnode=(struct node*)malloc(sizeof(struct node));
+    printf("Enter data to add in new node\n");
+    scanf("%d", &nnode->data);
+    nnode->next=NULL;
+    while(last->next!=NULL)
+        last=last->next;
+    last->next=nnode;
+}
+
+void InBet(struct node *head)
+{
     struct node *curr;
     curr=head;
-    int k = length(head), pos, i = 0;
+    int k; 
+    k=len(head);
+    int pos;
+    int i=1;
     nnode=(struct node*)malloc(sizeof(struct node));
     printf("Enter the Position you want to insert the new node in\n");
     scanf("%d", &pos);
-    if(pos > k && pos < 0) {
-        printf("Position out of bounds\nPlease choose a Position lower than: %d\n", k);
-        return;
-    }
     printf("Enter data to add in new node\n");
     scanf("%d", &nnode->data);
-    if(pos == k) {
-        nnode->next=NULL;
-        while(curr->next!=NULL)
-            curr=curr->next;
-            
-        curr->next=nnode;
-    } else {
-        while(i<pos) {
+    if(pos>k&&pos<k+1)
+        atEnd(head);
+    else if(pos>k+1)
+    {
+        printf("Error: Position out of bounds\nPlease choose a Position lower than: %d\n", k+2);
+    }
+    else
+    {
+        while(i<pos)
+        {
             i++;
             curr=curr->next;
         }
         nnode->next=curr->next;
         curr->next=nnode;
     }
-    //0 -> 1 -> 2 -> 10 -> 3 -> 4 -> 5 -> NULL 
 }
 
-int delete(struct node *head) {
-    struct node *curr, *temp;
-    curr=head;
-    int k;
-    k=length(head);
-    int pos, i = 0;
-    printf("\nEnter the pos at which you want to delete\n");
+void delete(struct node *head)
+{
+    int pos,k;
+    int i=1;
+    k=len(head);
+    struct node *prev, *curr;
+    prev=head;
+    curr=head->next;
+    printf("Enter the Position you want to delete the node on: ");
     scanf("%d", &pos);
-    if(pos == 0) {
-        temp = head->next;
-        head->next = head->next->next;
-        return temp->data;
-        //head -> 0 -> 1 -> 2 -> 3
-    } else if(pos == k - 1) {
-        while(curr->next->next != NULL) {
-            curr = curr->next;
-        }
-        temp = curr->next;
-        curr->next = NULL;
-        return temp->data;
-    } else if(pos < 0 && pos >= k) {
-        printf("\nInvalid position.");
-        return -1;
-    } else {
-        while(i < pos) {
-            curr = curr->next;
+    if(pos>k)
+        printf("Error: Position out of bounds\nPlease choose a Position lower than: %d\n", k+1);
+    else
+    {
+        while(i<pos)
+        {
             i++;
+            prev=curr;
+            curr=curr->next;
         }
-        temp = curr->next;
-        curr->next = curr->next->next;
-        return temp->data;
+        prev->next=curr->next;
+        curr->next=NULL;
     }
 }
-//head -> 0 -> <- 1  2 -> 3 -> -> 4 -> 5 -> NULL
-void reverse(struct node *head) {
-    struct node *prev = head->next, *curr = head->next->next;
-    while(curr != NULL) {
-        struct node *next = curr->next;
-        curr->next = prev;
 
-        prev = curr;
-        curr = next;
-    }
-    head->next->next = NULL;
-    head->next = prev;
-}
-
-void sort(struct node *head) {
+void sort(struct node *head)
+{
     struct node *curr, *prev, *front;
-    int i, j, l = length(head);
-    for(i=0; i<l-1; i++) {
-        prev = head;
-        curr = head->next;
-        for(j=0; j<l-1; j++) {
-            front = curr->next;
-            if(curr->data > front->data) {
-                curr->next = front->next;
-                front->next = curr;
-                prev->next = front;
-                prev = front;
-            } else {
-                prev = curr;
-                curr = curr->next;
+    int i,j,l;
+    l=len(head);
+    for(i=1;i<l-1;i++)
+    {
+        prev=head;
+        curr=head->next;
+        for (j=0;j<l-1;j++)
+        {
+            front=curr->next;
+            if(curr->data > front->data)
+            {
+                prev->next=front;
+                curr->next=front->next;
+                front->next=curr;
+                prev=front;
+            }
+            else
+            {
+                prev=curr;
+                curr=curr->next;
             }
         }
+        
     }
 }
 
-void create1(struct node *last, int x) {
-    struct node *curr;
-    curr=(struct node*)malloc(sizeof(struct node));
-    curr->next = NULL;
-    curr->data = x;
-    last->next = curr;
+int len(struct node *head)
+{
+    struct node *last;
+    last=head;
+    int ctr=0;
+    while(last->next!=NULL)
+    {
+        last=last->next;
+        ctr++;
+    }
+    return ctr;
+}
+
+void reverse(struct node *head)
+{
+    struct node *prev, *curr, *front;
+    prev=NULL;
+    curr=head->next;
+    while(curr!=NULL)
+    {
+        front=curr->next;
+        curr->next=prev;
+        prev=curr;
+        curr=front;
+    }
+    head->next=prev;
 }
 
 void merge(struct node *head1, struct node *head2)
@@ -201,35 +229,59 @@ void merge(struct node *head1, struct node *head2)
         display(head2);
 }
 
-int main() {
-    int ch=0, deleted = 0;
+int main()
+{
+    int ch=0;
     head=(struct node*)malloc(sizeof(struct node));
-    do {
-        printf("\n++++++++++++++++++++MENU++++++++++++++++++++\n1.Create List\n2.Display List\n3.Insert\n4.Delete\n5.Reverse\n6.Sort\n7.Merge\n8.Exit\n");
+    do
+    {
+        printf("++++++++++++++++++++MENU++++++++++++++++++++\n1.Create List\n2.Display List\n3.Insert a node\n4.Delete a node\n5.Sort the list\n6.Reverse a List\n7.Merge two Lists\n8.Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &ch);
-        switch(ch) {
+        switch(ch)
+        {
         case 1:
             create(head);
-            printf("\nfirst element: %d", head->next->data);
             break;
         case 2:
             display(head);
             break;
         case 3:
-            insert(head);
+            if(head->next==NULL)
+                printf("You need to create a list first\n");
+            else
+            {
+                int ch2=0;
+                printf("Where do you want to add the node?\n1.At Beggining\n2.At End\n3.In Between\n");
+                printf("Enter your choice: ");
+                scanf("%d", &ch2);
+                switch(ch2)
+                {
+                    case 1:
+                        atBeg(head);
+                        break;
+                    case 2:
+                        atEnd(head);
+                        break;
+                    case 3:
+                        InBet(head);
+                        break;
+                    default:
+                        printf("wrong choice\n");
+                }
+            }
             break;
         case 4:
-            deleted = delete(head);
-            printf("\nDeleted element is: %d", deleted);
+            delete(head);
             break;
         case 5:
-            reverse(head);
-            break;
-        case 6: 
             sort(head);
             break;
+        case 6:
+            reverse(head);
+            break;
         case 7:
+            
             head1=(struct node*)malloc(sizeof(struct node));
             head2=(struct node*)malloc(sizeof(struct node));
             printf("Enter data of first list\n");
