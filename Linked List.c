@@ -160,34 +160,45 @@ void create1(struct node *last, int x) {
     last->next = curr;
 }
 
-void merge(struct node *head1, struct node *head2) {
-    printf("\nin merge");
-    struct node *temp1 = head1 -> next, *temp2 = head2 -> next, *head3, *temp3 = head3;
-    head3=(struct node*)malloc(sizeof(struct node));
-    while(temp1 != NULL && temp2 != NULL) {
-        if(temp1->data <= temp2->data) {
-            create1(temp3, temp1->data);
-            temp1 = temp1->next;
-        } else if(temp2->data <= temp1->data){
-            create1(temp3, temp2->data);
-            temp2 = temp2->next;
-        }
-        temp3 = temp3->next;
+void merge(struct node *head1, struct node *head2)
+{
+    struct node *curr1, *curr2, *temp;
+    int flag;
+    curr1=head1->next;
+    curr2=head2->next;
+    if(curr1->data<curr2->data)
+    {
+        temp=head1;
+        flag=1;
     }
-    if(temp1 == NULL) {
-        while(temp2 != NULL) {
-            create1(temp3, temp2->data);
-            temp2 = temp2->next;
-            temp3 = temp3->next;
+    else
+    {
+        temp=head2;
+        flag=0;
+    }
+    while(curr1!=NULL&&curr2!=NULL)
+    {
+        if(curr1->data<curr2->data)
+        {
+            temp->next=curr1;
+            temp=curr1;
+            curr1=curr1->next;
         }
-    } else if(temp2 == NULL) {
-        while(temp1 != NULL) {
-            create1(temp3, temp1->data);
-            temp1 = temp1->next;
-            temp3 = temp3->next;
+        else
+        {
+            temp->next=curr2;
+            temp=curr2;
+            curr2=curr2->next;
         }
     }
-    display(head3);
+    if(curr1==NULL)
+        temp->next=curr2;
+    if(curr2==NULL)
+        temp->next=curr1;
+    if(flag==1)
+        display(head1);
+    else
+        display(head2);
 }
 
 int main() {
@@ -221,13 +232,15 @@ int main() {
         case 7:
             head1=(struct node*)malloc(sizeof(struct node));
             head2=(struct node*)malloc(sizeof(struct node));
-            printf("\nEnter first linked list: \n");
+            printf("Enter data of first list\n");
             create(head1);
-            printf("\nEnter second linked list: \n");
+            printf("Enter data of second list\n");
             create(head2);
-            printf("\nbefore merge");
-            merge(head1->next, head2->next);
-            printf("\nafter merge.");
+            printf("List 1 is:\n");
+            display(head1);
+            printf("List 2 is:\n");
+            display(head2);
+            merge(head1, head2);
             break;
         case 8:
             exit(0);
